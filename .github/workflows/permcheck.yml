@@ -1,0 +1,21 @@
+name: PermCheck
+on: workflow_dispatch
+jobs:
+  crossrepo:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      pull-requests: write
+      statuses: write
+    steps:
+      - name: 'Checkout external public repo (fork stand-in) with sparse token'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: octocat/Hello-World
+          ref: master
+      - name: Verify
+        run: |
+          echo "workspace=$GITHUB_WORKSPACE"
+          git remote -v
+          git log --oneline -1
+          ls -la | head -20
