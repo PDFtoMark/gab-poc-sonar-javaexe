@@ -1,0 +1,33 @@
+name: CI/CD Pipeline
+
+on:
+    pull_request:
+        branches: [main]
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+            - name: Run SonarCloud scan
+              shell: bash
+              env:
+                  PR_NUMBER: ${{ github.event.pull_request.number }}
+                  PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+                  PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+              run: |
+                  printf '%s\n' "$PR_NUMBER" "$PR_HEAD_REF" "$PR_BASE_REF" > pr-event.txt
+            - name: 'Prepare output artifact'
+              shell: bash
+              run: |
+                  printf 'placeholder\n' > placeholder.txt
+                  tar -czf output.tar placeholder.txt
+            - name: 'Upload sonar artifact'
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+              with:
+                  name: sonar-artifact
+                  path: |
+                      pr-event.txt
+                      output.tar
+                  if-no-files-found: error
+                  retention-days: 1
